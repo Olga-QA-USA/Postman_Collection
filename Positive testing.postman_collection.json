@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "e9e6dc1c-753a-4f97-8c10-accb23a7c711",
+		"name": "Positive testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8051726"
+	},
+	"item": [
+		{
+			"name": "Create a new project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var responseInJson = pm.response.json();",
+							"",
+							"//var projectId = responseInJson.id;",
+							"var projectName = responseInJson.name;",
+							"var projectAnnouncement = responseInJson.announcement;",
+							"",
+							"//console.log(\"projectId: \" + projectId )",
+							"//console.log(\"projectName: \" + projectName )",
+							"//console.log(\"projectAnnouncement: \" + projectAnnouncement )",
+							"",
+							"pm.collectionVariables.set(\"projectID\", responseInJson.id);",
+							"console.log(\"projectID: \" + pm.collectionVariables.get(\"projectID\"))",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 500ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(600);",
+							"});",
+							"",
+							"pm.test(\"test the name\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.eql(pm.iterationData.get(\"name\"));",
+							"});",
+							"pm.test(\" test announcement\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.announcement).to.eql(pm.iterationData.get(\"announcement\"));",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{name}}\",\n     \"announcement\": \"{{announcement}}\",\n    \"show_announcement\": true\n\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base url}}/{{api v2}}/add_project",
+					"host": [
+						"{{base url}}"
+					],
+					"path": [
+						"{{api v2}}",
+						"add_project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});",
+							"",
+							"pm.test(\"Verify new name and announcement\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.name).to.eql(pm.iterationData.get(\"update_project_name\"));",
+							"     pm.expect(jsonData.announcement).to.eql(pm.iterationData.get(\"update_announcement\"));",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{update_project_name}}\",\n    \"announcement\": \"{{update_announcement}}\",\n    \"show_announcement\": true\n    }\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base url}}/{{api v2}}/update_project/{{projectID}}",
+					"host": [
+						"{{base url}}"
+					],
+					"path": [
+						"{{api v2}}",
+						"update_project",
+						"{{projectID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete project",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response time is less than 400ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(400);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{base url}}{{api v2}}/delete_project/{{projectID}}",
+					"host": [
+						"{{base url}}{{api v2}}"
+					],
+					"path": [
+						"delete_project",
+						"{{projectID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "{{password}}",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "{{email}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"// pm.test(\"Status code is 200\", function () {",
+					"//     pm.response.to.have.status(200);",
+					"// });",
+					"// pm.test(\"Response time is less than 400ms\", function () {",
+					"//     pm.expect(pm.response.responseTime).to.be.below(400);",
+					"// });"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "projectID",
+			"value": ""
+		}
+	]
+}
